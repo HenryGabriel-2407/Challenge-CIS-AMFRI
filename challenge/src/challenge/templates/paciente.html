@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Aviso ao paciente — Elo Saúde{% endblock %}
+{% block content %}
+<div style="max-width:520px;margin:0 auto;">
+    <div style="background:#075e54;color:#fff;padding:16px 18px;border-radius:14px 14px 0 0;
+                display:flex;align-items:center;gap:12px;">
+        <div style="width:38px;height:38px;border-radius:50%;background:#25d366;display:grid;place-items:center;font-weight:800;">E</div>
+        <div><strong style="display:block;">Elo Saúde · UBS</strong>
+             <span style="font-size:.78rem;opacity:.85;">notificação simulada</span></div>
+    </div>
+    <div style="background:#e5ddd5;padding:26px 18px;border-radius:0 0 14px 14px;">
+        <div style="background:#fff;border-radius:10px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.12);max-width:90%;">
+            {{ notification.message }}
+            <div style="text-align:right;color:#9aa5b1;font-size:.72rem;margin-top:8px;">
+                ✅ {{ notification.logged_at.strftime('%d/%m/%Y %H:%M') }}
+            </div>
+        </div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+        <p class="kv"><strong>Paciente:</strong> {{ notification.patient_name }}</p>
+        <p class="kv"><strong>Canal:</strong> {{ notification.channel }}</p>
+        <p class="kv"><strong>Visita:</strong>
+            {{ notification.visit_date.strftime('%d/%m/%Y') }} —
+            {{ 'manhã' if notification.period.value == 'MANHA' else 'tarde' }}</p>
+        <p class="subtitle" style="margin-top:12px;">Nenhuma mensagem real é enviada neste MVP.</p>
+    </div>
+</div>
+{% endblock %}

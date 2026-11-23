@@ -4,7 +4,7 @@ import string
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from domotica_python.settings import Settings
+from challenge.settings import Settings
 
 settings = Settings()
 
@@ -19,7 +19,7 @@ def send_verification_email(to_email: str, code: str) -> bool:
     Envia e-mail HTML com código de verificação de conta.
     Usado no fluxo de cadastro (confirmação de e-mail).
     """
-    subject = "Verificação de Conta - Domótica"
+    subject = "Verificação de Conta - Challenge CIS-AMFRI"
 
     plain_body = (
         f"Seu código de verificação é: {code}\n\n"
@@ -54,7 +54,7 @@ def send_reset_password_email(to_email: str, code: str) -> bool:
     Envia e-mail HTML com código de redefinição de senha.
     Usado no fluxo "Esqueci a senha".
     """
-    subject = "Redefinição de Senha - Domótica"
+    subject = "Redefinição de Senha - Challenge CIS-AMFRI"
 
     plain_body = (
         f"Seu código de redefinição de senha é: {code}\n\n"
@@ -81,31 +81,6 @@ def send_reset_password_email(to_email: str, code: str) -> bool:
     </html>
     """
 
-    return _enviar_email(to_email, subject, plain_body, html_body)
-
-
-def send_mfa_email(to_email: str, code: str) -> bool:
-    """Envia e-mail com código de verificação MFA (2FA)."""
-    subject = "Código de Acesso - Domótica"
-    plain_body = f"Seu código de acesso é: {code}\n\nO código expira em 10 minutos."
-    html_body = f"""
-    <html>
-    <head><meta charset="utf-8"></head>
-    <body style="font-family: Arial, sans-serif; padding: 20px; max-width: 400px; margin: 0 auto;">
-        <h2 style="text-align: center; color: #0A192F;">Código de Acesso</h2>
-        <p>Olá!</p>
-        <p>Use o código abaixo para concluir seu login:</p>
-        <div style="text-align: center; margin: 24px 0;">
-            <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #0A192F;
-                         background: #E0E0E0; padding: 12px 24px; border-radius: 8px;">
-                {code}
-            </span>
-        </div>
-        <p style="color: #666; font-size: 14px;">O código expira em 10 minutos.</p>
-        <p style="color: #666; font-size: 14px;">Se você não tentou fazer login, ignore este e-mail.</p>
-    </body>
-    </html>
-    """
     return _enviar_email(to_email, subject, plain_body, html_body)
 
 

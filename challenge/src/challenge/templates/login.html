@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Entrar — Elo Saúde{% endblock %}
+{% block content %}
+<div class="card" style="max-width:460px;margin:0 auto;">
+    <h1>Acesso à plataforma</h1>
+    <p class="subtitle">Transição do cuidado entre hospital, UBS e paciente.</p>
+
+    <form method="post" action="/ui/login">
+        <div class="grid">
+            <div class="full">
+                <label for="email">E-mail</label>
+                <input id="email" name="email" type="email" required autocomplete="username"
+                       placeholder="hospital@elo.saude">
+            </div>
+            <div class="full">
+                <label for="password">Senha</label>
+                <input id="password" name="password" type="password" required autocomplete="current-password">
+            </div>
+            <div class="full"><button type="submit">Entrar</button></div>
+        </div>
+    </form>
+
+    <div class="msg ok" style="margin-top:22px;">
+        <strong>Contas de demonstração</strong><br>
+        Hospital/UPA: <code>hospital@elo.saude</code><br>
+        UBS: <code>ubs@elo.saude</code><br>
+        Administrador: <code>admin@elo.saude</code><br>
+        Senha para todos os perfis de demonstração: <code>Senha@123</code>
+        (a senha do administrador vem de <code>.env</code>).
+    </div>
+</div>
+{% endblock %}

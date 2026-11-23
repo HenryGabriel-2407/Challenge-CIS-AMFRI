@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Painel da UBS — Elo Saúde{% endblock %}
+{% block content %}
+<h1>Painel da UBS</h1>
+<p class="subtitle">{{ ubs.name }} · {{ ubs.municipality }} — contrarreferências recebidas.</p>
+
+{% if not discharges %}
+<div class="card"><p>Nenhuma contrarreferência recebida até o momento.</p></div>
+{% endif %}
+
+{% for d in discharges %}
+<article class="item">
+    <div class="item-head">
+        <div>
+            <h2>{{ d.patient.name }}</h2>
+            <div class="meta">CPF {{ d.patient.cpf }} · nasc. {{ d.patient.birth_date.strftime('%d/%m/%Y') }}
+                {% if d.patient.phone %}· tel. {{ d.patient.phone }}{% endif %}</div>
+        </div>
+        <span class="badge {{ d.status.value }}">{{ d.status.value }}</span>
+    </div>
+
+    <p class="kv"><strong>Origem:</strong> {{ d.origin.name }} · alta em {{ d.discharged_at.strftime('%d/%m/%Y') }}</p>
+    <p class="kv"><strong>Resumo clínico:</strong> {{ d.summary }}</p>
+    {% if d.prescriptions %}
+    <p class="kv"><strong>Prescrições:</strong></p>
+    <ul>
+        {% for p in d.prescriptions %}
+        <li>{{ p.medication }} — {{ p.dosage }}, {{ p.frequency }}
+            {% if p.instructions %}({{ p.instructions }}){% endif %}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% if d.care_plan %}
+    <p class="kv"><strong>Plano de cuidados:</strong> {{ d.care_plan.instructions }}</p>
+    {% if d.care_plan.visit_date %}
+    <p class="kv"><strong>Visita:</strong> {{ d.care_plan.visit_date.strftime('%d/%m/%Y') }} —
+        {{ 'manhã' if d.care_plan.period.value == 'MANHA' else 'tarde' }}</p>
+    {% endif %}
+    {% endif %}
+
+    <div class="actions">
+        {% if d.status.value == 'PENDENTE' %}
+        <form method="post" action="/ui/ubs/{{ d.id }}/confirm">
+            <button type="submit" class="btn-sm">Confirmar recebimento</button>
+        </form>
+        {% elif d.status.value == 'CONFIRMADA' %}
+        <form method="post" action="/ui/ubs/{{ d.id }}/schedule">
+            <div><label for="visit_date_{{ d.id }}">Data da visita</label>
+                 <input class="mini" id="visit_date_{{ d.id }}" name="visit_date" type="date" required></div>
+            <div><label for="period_{{ d.id }}">Período</label>
+                 <select class="mini" id="period_{{ d.id }}" name="period">
+                     <option value="MANHA">Manhã (09:00–12:00)</option>
+                     <option value="TARDE">Tarde (13:00–17:00)</option>
+                 </select></div>
+            <button type="submit" class="btn-sm">Agendar visita</button>
+        </form>
+        {% elif d.status.value == 'AGENDADA' %}
+        <form method="post" action="/ui/ubs/{{ d.id }}/notify">
+            <button type="submit" class="btn-sm">Enviar aviso ao paciente</button>
+        </form>
+        <a class="btn btn-ghost btn-sm" href="/ui/paciente/{{ d.id }}">Prévia da mensagem</a>
+        {% elif d.status.value == 'NOTIFICADA' %}
+        <a class="btn btn-ghost btn-sm" href="/ui/paciente/{{ d.id }}">Ver mensagem enviada</a>
+        {% endif %}
+    </div>
+</article>
+{% endfor %}
+{% endblock %}

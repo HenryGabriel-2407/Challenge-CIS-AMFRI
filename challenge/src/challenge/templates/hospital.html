@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Registrar alta — Elo Saúde{% endblock %}
+{% block content %}
+<h1>Registrar alta hospitalar</h1>
+<p class="subtitle">Hospital/UPA encaminha o resumo clínico, prescrições e orientações para a UBS de referência.</p>
+
+{% if error %}<div class="msg erro">{{ error }}</div>{% endif %}
+
+<div class="card">
+    <h2>Dados da contrarreferência</h2>
+    <form method="post" action="/ui/hospital">
+        <div class="grid">
+            <div><label for="patient_name">Nome do paciente</label>
+                 <input id="patient_name" name="patient_name" required value="{{ form.get('patient_name','') }}"></div>
+            <div><label for="cpf">CPF</label>
+                 <input id="cpf" name="cpf" required placeholder="000.000.000-00" value="{{ form.get('cpf','') }}"></div>
+            <div><label for="birth_date">Data de nascimento</label>
+                 <input id="birth_date" name="birth_date" type="date" required value="{{ form.get('birth_date','') }}"></div>
+            <div><label for="phone">Telefone (opcional)</label>
+                 <input id="phone" name="phone" placeholder="47999999999" value="{{ form.get('phone','') }}"></div>
+            <div class="full"><label for="target_ubs_id">UBS de referência</label>
+                 <select id="target_ubs_id" name="target_ubs_id" required>
+                     <option value="">Selecione a UBS…</option>
+                     {% for ubs in ubs_list %}
+                     <option value="{{ ubs.id }}" {% if form.get('target_ubs_id') == ubs.id|string %}selected{% endif %}>
+                         {{ ubs.name }} — {{ ubs.municipality }}
+                     </option>
+                     {% endfor %}
+                 </select>
+            </div>
+            <div class="full"><label for="summary">Resumo de alta / necessidades de cuidado</label>
+                 <textarea id="summary" name="summary" required minlength="10">{{ form.get('summary','') }}</textarea></div>
+        </div>
+
+        <h2 style="margin-top:24px;">Prescrição</h2>
+        <div class="grid">
+            <div><label for="medication">Medicamento</label>
+                 <input id="medication" name="medication" required value="{{ form.get('medication','') }}"></div>
+            <div><label for="dosage">Dosagem</label>
+                 <input id="dosage" name="dosage" required placeholder="Ex.: 1 comprimido" value="{{ form.get('dosage','') }}"></div>
+            <div><label for="frequency">Frequência</label>
+                 <input id="frequency" name="frequency" required placeholder="Ex.: 12 em 12 horas" value="{{ form.get('frequency','') }}"></div>
+            <div class="full"><label for="prescription_instructions">Orientações (opcional)</label>
+                 <input id="prescription_instructions" name="prescription_instructions"
+                        value="{{ form.get('prescription_instructions','') }}"></div>
+        </div>
+
+        <h2 style="margin-top:24px;">Plano de cuidados</h2>
+        <div class="grid">
+            <div class="full"><label for="care_instructions">Orientações para a equipe da UBS</label>
+                 <textarea id="care_instructions" name="care_instructions" required minlength="5">{{ form.get('care_instructions','') }}</textarea></div>
+            <div class="full"><button type="submit">Enviar contrarreferência</button></div>
+        </div>
+    </form>
+</div>
+{% endblock %}
